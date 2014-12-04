@@ -1,0 +1,11 @@
+{
+  "manifest_version": 1,
+  "name": "Experiment_1",
+  "description": "A 2D shootout game",
+  "version": "1.0",
+  "app": {
+  "background": {
+    "scripts":["main.js"]
+    }
+  }
+}
