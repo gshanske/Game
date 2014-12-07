@@ -1,43 +1,38 @@
-  var canvas = document.getElementById('canvas');
+   var canvas = document.getElementById('canvas');
   var ctx = canvas.getContext("2d");
 
   var drawStuff = function(position,angle){
+    ctx.clearRect(0,0,10000,10000);
     ctx.save();
-    ctx.translate(position-50,25);
+    ctx.translate(position,window.innerHeight/5);
+    ctx.fillStyle = "#00ff00";
+    ctx.fillRect(0,0,25,15);
+    ctx.translate(20,-5);
     ctx.rotate(angle);
-    ctx.fillStyle = "#ff0000";
-    ctx.fillRect(0,0,100,100);
+    ctx.fillRect(0,0,5,25);
     ctx.restore();
   };
-  var radians = 2;
+  var radians = 1/12;
   var pos = 30;
   
     document.addEventListener('keydown', function (e) {
       switch (e.keyCode){
         case 37:
-          //ctx.fillStyle = "#ff0000";
-          //ctx.fillRect(0,0,100,100);
           pos -= 2.5;
           drawStuff(pos,radians*Math.PI);
           break;
           
         case 38:
-          //ctx.fillStyle = "#00ff00";
-          //ctx.fillRect(0,0,100,100);
           radians += 0.15;
           drawStuff(pos,radians*Math.PI);
           break;
         
         case 39:
-          //ctx.fillStyle = "#0000ff";
-          //ctx.fillRect(0,0,100,100);
           pos += 2.5;
           drawStuff(pos,radians*Math.PI);
           break;
         
         case 40:
-          //ctx.fillStyle = "#ffff00";
-          //ctx.fillRect(0,0,100,100);
           radians -= 0.15;
           drawStuff(pos,radians*Math.PI);
           break;
