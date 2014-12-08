@@ -1,4 +1,4 @@
-   var canvas = document.getElementById('canvas');
+ var canvas = document.getElementById('canvas');
   var ctx = canvas.getContext("2d");
 
   var drawStuff = function(position,angle){
@@ -7,7 +7,7 @@
     ctx.translate(position,window.innerHeight/5);
     ctx.fillStyle = "#00ff00";
     ctx.fillRect(0,0,25,15);
-    ctx.translate(20,-5);
+    ctx.translate(20,5);
     ctx.rotate(angle);
     ctx.fillRect(0,0,5,25);
     ctx.restore();
@@ -23,7 +23,9 @@
           break;
           
         case 38:
+          //if(//rotation barrier){
           radians += 0.15;
+         // }
           drawStuff(pos,radians*Math.PI);
           break;
         
