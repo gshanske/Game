@@ -1,4 +1,4 @@
-var canvas = document.getElementById('canvas');
+ var canvas = document.getElementById('canvas');
   var ctx = canvas.getContext("2d");
 
 // Draws the tank.
@@ -10,9 +10,9 @@ var canvas = document.getElementById('canvas');
   // Draws the tank body.
     ctx.fillRect(0,0,25,15);
   // Draws the tank's turret.
-    ctx.translate(20,5);
+    ctx.translate(20,3);
     ctx.rotate(angle);
-    ctx.fillRect(0,0,5,20);
+    ctx.fillRect(0,0,3,20);
     ctx.restore();
   };
   var radians = 1.5;
@@ -20,7 +20,7 @@ var canvas = document.getElementById('canvas');
   // Binds the movement and aim of the tank to the arrow keys.
     document.addEventListener('keydown', function (e) {
       switch (e.keyCode){
-      // Right
+      // Left
         case 37:
           pos -= 2.5;
           moveTank(pos,radians*Math.PI);
@@ -32,17 +32,21 @@ var canvas = document.getElementById('canvas');
           }
           moveTank(pos,radians*Math.PI);
           break;
-        
+      // Right
         case 39:
           pos += 2.5;
           moveTank(pos,radians*Math.PI);
           break;
-        
+      // Down
         case 40:
          if(radians <= 1.35){
           radians += 0.15;
          }
           moveTank(pos,radians*Math.PI);
+          break;
+      // Space
+        case 32:
+         // Code to shoot goes here
           break;
         
         default:
