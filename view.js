@@ -1,7 +1,11 @@
-  var canvas = document.getElementById('canvas');
+var canvas = document.getElementById('canvas');
   var ctx = canvas.getContext("2d");
-  ctx.canvas.width  = window.innerWidth;
-  ctx.canvas.height = window.innerHeight;
+  
+  
+  var resize = function () {
+      ctx.canvas.width  = window.innerWidth;
+      ctx.canvas.height = window.innerHeight;
+    };
   
   var tankWidth = window.innerWidth/11;
   var tankHeight = window.innerHeight/10;
@@ -57,6 +61,7 @@
       
       // Left
         case 37:
+          resize();
           if(!hasHitLeftWall){
             pos -= 2.5;
           }
@@ -64,6 +69,7 @@
           break;
       // Up
         case 38:
+          resize();
           if(radians%2 > -0.35){
           radians -= 0.15;
           }
@@ -71,6 +77,7 @@
           break;
       // Right
         case 39:
+          resize();
           if(!hasHitRightWall){
           pos += 2.5;
           }
@@ -78,6 +85,7 @@
           break;
       // Down
         case 40:
+          resize();
          if(radians%2 < 0){
           radians += 0.15;
          }
@@ -85,11 +93,12 @@
           break;
       // Space
         case 32:
+          resize();
          // Code to shoot goes here
           break;
         
         default:
-        
+          resize();
           break;
     
       }
