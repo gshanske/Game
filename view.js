@@ -15,7 +15,7 @@ app.init = function () {
   app.shotInMotion = false;
   app.shotPower = 1;
   app.secondsInAir = 0;
-  app.gravity = -9.8*app.secondsInAir;
+  app.gravity = -9.8*app.secondsInAir*app.secondsInAir;
  
   app.resize();
   app.moveTank('p1');
@@ -33,46 +33,50 @@ app.resize = function () {
   return app;
 };
   
-  // Draws the tank.
-
+// Draws the tank.
 app.moveTank = function(player){
-  if(app.shotInMotion === false)
-   if(player === 'p1'){
-    app.ctx.clearRect(0,0,window.innerWidth,window.innerHeight);
+  if(player === 'p1'){
+    app.ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
     app.ctx.save();
-    app.ctx.translate(app.Position,3.75*window.innerHeight/7);
+    app.ctx.translate(app.Position, 3.75 * window.innerHeight / 7);
     app.ctx.fillStyle = "#00ff00";
-  
+    
     // Draws the tank body.
     
-    app.ctx.fillRect(0,0,app.tankWidth,app.tankHeight);
+    app.ctx.fillRect(0, 0, app.tankWidth, app.tankHeight);
     
     // Draws the tank's turret.
-   
-    app.ctx.translate(window.innerWidth/15,0);
+    
+    app.ctx.translate(window.innerWidth / 15,0);
     app.ctx.rotate(app.Radians);
     app.ctx.fillRect(0,0,app.turretWidth,app.turretHeight);
     app.ctx.restore();
     
-  }
-    
     return app;
-  };
+  }
+};
+
 app.findShotX = function(time){
   app.secondsInAir += 0.1;
-  return Math.cos(app.Radians)*app.shotPower*(time-0.1)+app.Position;
+  return Math.cos(app.Radians)*app.shotPower*(time-0.1);
 };
 
 app.findShotY = function(time){
-  return Math.sin(app.Radians)*app.shotPower*(time-0.1)+app.Position;
+  return Math.sin(app.Radians)*app.shotPower*(time-0.1)-app.gravity
+  ;
 };
 
 app.shoot = function(){
   app.moveTank('p1');
+  app.shotInMotion = true;
   app.ctx.save();
-  app.ctx.translate(app.Position + window.innerWidth/15,3.75*window.innerHeight/7-window.innerHeight/10);
+  app.ctx.translate(app.Position + window.innerWidth/11+window.innerWidth/15,3.75*window.innerHeight/7);
   app.ctx.drawImage(app.projectile,app.findShotX(app.secondsInAir),app.findShotY(app.secondsInAir),window.innerHeight/30,window.innerHeight/30);
+  if (app.findShotY(app.secondsInAir) <= 0){
+   app.shotInMotion = false;
+  }
   app.ctx.restore();
+  
 } ;
   
   
@@ -102,8 +106,8 @@ document.addEventListener('keydown', function (e) {
     break;
     // Up
     case 38:
-    if(app.Radians%2 > -0.35){
-    app.Radians -= 0.15;
+    if(app.Radians%2 > -0.5){
+    app.Radians -= 0.015*Math.PI;
   }
     app.moveTank('p1');
     break;
@@ -117,13 +121,15 @@ document.addEventListener('keydown', function (e) {
     // Down
     case 40:
     if(app.Radians%2 < 0){
-    app.Radians += 0.15;
+    app.Radians += 0.015*Math.PI;
   }
     app.moveTank('p1');
     break;
     // Space
     case 32:
+    while (app.findShotY >= 0){
     app.shoot();
+    }
     break;
     
     default:
