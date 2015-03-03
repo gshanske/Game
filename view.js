@@ -5,6 +5,10 @@ app.init = function () {
   app.ctx = app.canvas.getContext("2d");
   app.projectile = new Image();
   app.projectile.src = 'Cannonball.png';
+  app.tankImage = new Image();
+  app.tankImage.src = 'Game Tank.png';
+  app.turretImage = new Image();
+  app.turretImage.src = 'Game Turret.png';
   app.healthLeft = 100;
   app.movementLeft = 10;
   app.hasHitEnemy;
@@ -16,9 +20,10 @@ app.init = function () {
   app.shotPower = 1;
   app.secondsInAir = 0;
   app.gravity = -9.8*app.secondsInAir;
- 
+  app.shotX = 0;
+  app.shotY = 0;
+  
   app.resize();
-  app.moveTank('p1');
   
   return app;
 };
@@ -26,10 +31,12 @@ app.init = function () {
 app.resize = function () {
   app.ctx.canvas.width  = window.innerWidth;
   app.ctx.canvas.height = window.innerHeight;
-  app.tankWidth = window.innerWidth/11;
-  app.tankHeight = window.innerHeight/10;
-  app.turretWidth = window.innerWidth/15;
-  app.turretHeight = window.innerHeight/75;
+  app.tankWidth = window.innerWidth/5.5;
+  app.tankHeight = window.innerHeight/5;
+  app.turretWidth = window.innerWidth/7.5;
+  app.turretHeight = window.innerHeight/25;
+  app.moveTank('p1');
+  console.log("Resize");
   return app;
 };
   
@@ -39,41 +46,45 @@ app.moveTank = function(player){
     app.ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
     app.ctx.save();
     app.ctx.translate(app.Position, 3.75 * window.innerHeight / 7);
-    app.ctx.fillStyle = "#00ff00";
-    
-    // Draws the tank body.
-    
-    app.ctx.fillRect(0, 0, app.tankWidth, app.tankHeight);
-    
-    // Draws the tank's turret.
-    
-    app.ctx.translate(window.innerWidth / 15,0);
+    app.ctx.translate(window.innerWidth / 12, window.innerWidth / 125);
     app.ctx.rotate(app.Radians);
-    app.ctx.fillRect(0,0,app.turretWidth,app.turretHeight);
+    app.ctx.drawImage(app.turretImage,0,0,app.turretWidth, app.turretHeight);
+    app.ctx.rotate(0-app.Radians);
+    app.ctx.translate(0-window.innerWidth / 12, 0-window.innerWidth / 125);
+    app.ctx.drawImage(app.tankImage,0,0,app.tankWidth, app.tankHeight);
     app.ctx.restore();
     
     return app;
   }
 };
 
-app.findShotX = function(time){
-  app.secondsInAir += 0.1;
-  return Math.cos(app.Radians)*app.shotPower*(time-0.1);
+app.findShotX = function(){
+  app.shotX++;
+  return app.shotX;
 };
 
-app.findShotY = function(time){
-  return Math.sin(app.Radians)*app.shotPower*(time-0.1);
+app.findShotY = function(){
+  app.shotY -= app.gravity;
+  return app.shotY;
 };
 
 app.shoot = function(){
   app.moveTank('p1');
-  app.ctx.save();
-  app.ctx.translate(app.Position + window.innerWidth/11+window.innerWidth/15,3.75*window.innerHeight/7);
-  app.ctx.drawImage(app.projectile,app.findShotX(app.secondsInAir),app.findShotY(app.secondsInAir),window.innerHeight/30,window.innerHeight/30);
-  if (app.findShotY(app.secondsInAir) === 0){
-   app.shotInMotion = false;
+  app.shotInMotion = true;
+  while(app.shotInMotion){
+    app.ctx.save();
+    app.ctx.translate(app.Position + app.tankWidth, 3.75 * window.innerHeight / 7);
+    app.ctx.rotate(app.Radians);
+    app.ctx.drawImage(app.projectile,app.findShotX(),app.findShotY(),window.innerHeight/30,window.innerHeight/30);
+    app.ctx.restore();
+    app.ctx.clearRect(window.innerWidth,window.innerHeight);
+    app.moveTank('p1');
+     if(app.findShotY(app.secondsInAir) <= 0){
+       app.shotX = 0;
+       app.shotY = 0;
+     }
   }
-  app.ctx.restore();
+  
   
 } ;
   
@@ -104,8 +115,8 @@ document.addEventListener('keydown', function (e) {
     break;
     // Up
     case 38:
-    if(app.Radians%2 > -0.35){
-    app.Radians -= 0.15;
+    if(app.Radians%2 > -0.5){
+    app.Radians -= 0.015*Math.PI;
   }
     app.moveTank('p1');
     break;
@@ -119,16 +130,13 @@ document.addEventListener('keydown', function (e) {
     // Down
     case 40:
     if(app.Radians%2 < 0){
-    app.Radians += 0.15;
+    app.Radians += 0.015*Math.PI;
   }
     app.moveTank('p1');
     break;
     // Space
     case 32:
-    app.shotInMotion = true;
-    while (app.shotInMotion){
     app.shoot();
-    }
     break;
     
     default:
