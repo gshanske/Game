@@ -17,7 +17,7 @@ app.init = function () {
   app.Radians = 0;
   app.Position = 3*window.innerWidth/50;
   app.shotInMotion = false;
-  app.shotPower = 1;
+  app.shotPower = 0.5;
   app.secondsInAir = 0;
   app.gravity = -9.8*app.secondsInAir;
   app.shotX = 0;
@@ -59,33 +59,29 @@ app.moveTank = function(player){
 };
 
 app.findShotX = function(){
-  app.shotX++;
+
   return app.shotX;
 };
 
 app.findShotY = function(){
-  app.shotY -= app.gravity;
+
   return app.shotY;
 };
 
 app.shoot = function(){
-  app.moveTank('p1');
   app.shotInMotion = true;
-  while(app.shotInMotion){
-    app.ctx.save();
-    app.ctx.translate(app.Position + app.tankWidth, 3.75 * window.innerHeight / 7);
-    app.ctx.rotate(app.Radians);
-    app.ctx.drawImage(app.projectile,app.findShotX(),app.findShotY(),window.innerHeight/30,window.innerHeight/30);
-    app.ctx.restore();
-    app.ctx.clearRect(window.innerWidth,window.innerHeight);
+  var x = 0;
+  while (app.shotInMotion){
     app.moveTank('p1');
-     if(app.findShotY(app.secondsInAir) <= 0){
-       app.shotX = 0;
-       app.shotY = 0;
-     }
+    app.ctx.save();
+    app.ctx.translate(app.Position + app.tankWidth + x, 3.75 * window.innerHeight / 7);
+    app.ctx.drawImage(app.projectile, 0, 0, window.innerWidth/50, window.innerWidth/50);
+    app.ctx.restore();
+    if(x === 100){
+      app.shotInMotion = false;
+    }
+    x += app.shotPower;
   }
-  
-  
 } ;
   
   
